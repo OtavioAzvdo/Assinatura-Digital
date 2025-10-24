@@ -1,31 +1,20 @@
-// ✅ URL do seu App Script (API)
 const API_URL = "https://script.google.com/macros/s/AKfycbzL2IBZXPKcfEwpiLgJzgkZjLlpuZQyB2moT70jpGoy6P2en84XQ-34wY7drLVa78-Q/exec";
 
-const form = document.getElementById("form-assinatura");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 let desenhando = false;
+const salvarBtn = document.getElementById("salvar");
+const limparBtn = document.getElementById("limpar");
+const msg = document.getElementById("mensagem");
 
 // === DESENHO DA ASSINATURA ===
-canvas.addEventListener("mousedown", () => desenhando = true);
-canvas.addEventListener("mouseup", () => {
-  desenhando = false;
-  ctx.beginPath();
-});
+canvas.addEventListener("mousedown", e => { desenhando = true; desenhar(e); });
+canvas.addEventListener("mouseup", () => { desenhando = false; ctx.beginPath(); });
 canvas.addEventListener("mousemove", desenhar);
 
-canvas.addEventListener("touchstart", e => { 
-  desenhando = true; 
-  e.preventDefault(); 
-});
-canvas.addEventListener("touchend", () => {
-  desenhando = false;
-  ctx.beginPath();
-});
-canvas.addEventListener("touchmove", e => {
-  desenhar(e.touches[0]);
-  e.preventDefault();
-});
+canvas.addEventListener("touchstart", e => { desenhando = true; e.preventDefault(); });
+canvas.addEventListener("touchend", () => { desenhando = false; ctx.beginPath(); });
+canvas.addEventListener("touchmove", e => { desenhar(e.touches[0]); e.preventDefault(); });
 
 function desenhar(e) {
   if (!desenhando) return;
@@ -41,24 +30,27 @@ function desenhar(e) {
   ctx.moveTo(x, y);
 }
 
-// === LIMPAR ASSINATURA ===
-document.getElementById("limpar").addEventListener("click", () => {
+// === LIMPAR ===
+limparBtn.addEventListener("click", () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.beginPath();
+  msg.textContent = "🧹 Assinatura limpa!";
+  msg.style.color = "gray";
 });
 
-// === ENVIAR ASSINATURA ===
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+// === SALVAR ===
+salvarBtn.addEventListener("click", async () => {
   const nome = document.getElementById("nome").value.trim();
   const email = document.getElementById("email").value.trim();
-  const assinatura = canvas.toDataURL("image/png");
-
   if (!nome) {
-    alert("Por favor, preencha o nome completo!");
+    msg.textContent = "⚠️ Digite seu nome antes de salvar!";
+    msg.style.color = "orange";
     return;
   }
 
+  msg.textContent = "Enviando assinatura...";
+  msg.style.color = "#007bff";
+
+  const assinatura = canvas.toDataURL("image/png");
   const dados = { nome, email, assinatura };
 
   try {
@@ -68,16 +60,19 @@ form.addEventListener("submit", async (e) => {
       body: JSON.stringify(dados),
     });
 
-    if (!res.ok) throw new Error("Erro ao conectar com o servidor.");
-
+    if (!res.ok) throw new Error("Erro ao conectar ao servidor");
     const json = await res.json();
+
     if (json.status === "ok") {
-      alert("✅ Assinatura salva com sucesso!");
+      msg.textContent = "✅ Assinatura salva com sucesso!";
+      msg.style.color = "green";
       document.getElementById("irProva").style.display = "block";
     } else {
-      alert("❌ Erro ao salvar: " + json.mensagem);
+      msg.textContent = "❌ Erro: " + (json.mensagem || "Falha ao salvar");
+      msg.style.color = "red";
     }
   } catch (err) {
-    alert("❌ Falha ao salvar: " + err.message);
+    msg.textContent = "❌ Falha ao salvar: " + err.message;
+    msg.style.color = "red";
   }
 });
