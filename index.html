@@ -27,6 +27,12 @@
       border-radius: 6px;
       margin-top: 10px;
       touch-action: none;
+      background: #fff;
+    }
+    #mensagem {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
     }
     @media (max-width: 600px) {
       body { padding: 8px; }
@@ -37,14 +43,15 @@
 </head>
 <body>
   <h2>Assinatura</h2>
-  <form id="form-assinatura">
+  <form id="form-assinatura" onsubmit="return false;">
     <input id="nome" placeholder="Nome completo" required>
     <input id="email" placeholder="E-mail">
     <canvas id="canvas"></canvas>
     <button type="button" id="limpar">Limpar</button>
-    <button type="submit">Enviar assinatura</button>
+    <button type="button" id="salvar">Salvar assinatura</button>
   </form>
 
+  <p id="mensagem"></p>
   <button id="irProva" style="display:none;">Ir para a prova</button>
 
   <script src="script.js"></script>
