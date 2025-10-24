@@ -1,26 +1,51 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Assinatura Digital</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 480px;
+      margin: 20px auto;
+      padding: 16px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      height: 40px;
+    }
+    canvas {
+      width: 100%;
+      height: 200px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 10px;
+      touch-action: none;
+    }
+    @media (max-width: 600px) {
+      body { padding: 8px; }
+      input, button { font-size: 15px; height: 42px; }
+      canvas { height: 180px; }
+    }
+  </style>
 </head>
 <body>
-  <h3>Assinatura Digital do Certificado:</h3>
-
-  <div class="text-btn">
-    <input id="nome" type="text" placeholder="Seu nome completo">
-    <input id="email" type="email" placeholder="Seu e-mail">
+  <h2>Assinatura</h2>
+  <form id="form-assinatura">
+    <input id="nome" placeholder="Nome completo" required>
+    <input id="email" placeholder="E-mail">
     <canvas id="canvas"></canvas>
-  </div>
+    <button type="button" id="limpar">Limpar</button>
+    <button type="submit">Enviar assinatura</button>
+  </form>
 
-  <div class="buttons">
-    <button id="salvarBtn">💾 Salvar</button>
-    <button id="limpar">🧹 Limpar</button>
-  </div>
-
-  <p id="mensagem"></p>
+  <button id="irProva" style="display:none;">Ir para a prova</button>
 
   <script src="script.js"></script>
 </body>
